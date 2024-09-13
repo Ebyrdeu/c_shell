@@ -17,35 +17,20 @@ void run_shell(void) {
 }
 
 char *read_line(void) {
-	uint buffer_size = SHELL_BUFFER_SIZE;
-	char *buffer = malloc(sizeof(char) * buffer_size);
-	int position = 0;
-	int current_char;
-
-	if (!buffer) {
-		fprintf(stderr, "malloc failed on allocating buffer in read_line\n");
-		fprintf(stderr, "with buffer size: %d\n", buffer_size);
-		exit(EXIT_FAILURE);
-	}
+	ulong buffer_size = SHELL_BUFFER_SIZE;
+	char *buffer = NULL;
 
 	print_shell_prompt();
 
-	while (current_char = getchar(), current_char != EOF && current_char != '\n') {
-		buffer[position++] = current_char;
-
-		if (position >= buffer_size) {
-			buffer_size *= 2;
-			char *new_buffer = realloc(buffer, buffer_size);
-			if (new_buffer == NULL) {
-				fprintf(stderr, "realloc failed on reallocating buffer in read_line\n");
-				fprintf(stderr, "with buffer size: %d\n", buffer_size);
-				free(buffer);
-				exit(EXIT_FAILURE);
-			}
-			buffer = new_buffer;
+	//https://man7.org/linux/man-pages/man3/getline.3.html
+	if (getline(&buffer, &buffer_size, stdin) == -1) {
+		if (!feof(stdin)) {
+			perror("Error reading from stdin");
+			exit(EXIT_FAILURE);
 		}
+
+		exit(EXIT_SUCCESS);
 	}
-	buffer[position] = '\0';
 	return buffer;
 }
 

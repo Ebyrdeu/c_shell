@@ -22,9 +22,9 @@
  * - cwd: A character array holding the current working directory (maximum 4096 characters).
  */
 typedef struct {
-	char usr[LOGIN_NAME_MAX]; // Login name of the user running the shell
-	char hst[HOST_NAME_MAX]; // Hostname of the system
-	char cwd[PATH_MAX]; // Current working directory
+ char usr[LOGIN_NAME_MAX]; // Login name of the user running the shell
+ char hst[HOST_NAME_MAX]; // Hostname of the system
+ char cwd[PATH_MAX]; // Current working directory
 } Prompt;
 
 /**
