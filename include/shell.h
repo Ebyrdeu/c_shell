@@ -4,23 +4,27 @@
 
 #ifndef SHELL_H
 #define SHELL_H
+#include <linux/limits.h>
 
 // Define the size of the buffer used to read input commands in the shell
 // 128 bytes by default
 #define SHELL_BUFFER_SIZE 1024
+
+#define HOST_NAME_MAX 64
+#define LOGIN_NAME_MAX 256
 
 /**
  * Struct representing the shell prompt details.
  *
  * Members:
  * - usr: A character array holding the username of the current user (maximum 256 characters).
- * - hst: A character array holding the hostname of the system (maximum 256 characters).
- * - cwd: A character array holding the current working directory (maximum 256 characters).
+ * - hst: A character array holding the hostname of the system (maximum 64 characters).
+ * - cwd: A character array holding the current working directory (maximum 4096 characters).
  */
 typedef struct {
- char usr[256]; // Username of the user running the shell
- char hst[256]; // Hostname of the system
- char cwd[256]; // Current working directory
+	char usr[LOGIN_NAME_MAX]; // Login name of the user running the shell
+	char hst[HOST_NAME_MAX]; // Hostname of the system
+	char cwd[PATH_MAX]; // Current working directory
 } Prompt;
 
 /**

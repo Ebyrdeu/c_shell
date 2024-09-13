@@ -54,17 +54,17 @@ void print_shell_prompt(void) {
 	char *home_dir = NULL;
 
 	// get full path of dir
-	if (getcwd(prompt.cwd, sizeof(prompt.cwd)) == NULL) {
+	if (getcwd(prompt.cwd, PATH_MAX) == NULL) {
 		printf("getcwd failed\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (gethostname(prompt.hst, sizeof(prompt.hst)) != 0) {
+	if (gethostname(prompt.hst, HOST_NAME_MAX) != 0) {
 		printf("get hostname failed\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if (getlogin_r(prompt.usr, sizeof(prompt.usr)) != 0) {
+	if (getlogin_r(prompt.usr, LOGIN_NAME_MAX) != 0) {
 		printf("get username failed\n");
 		exit(EXIT_FAILURE);
 	}
