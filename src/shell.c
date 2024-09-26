@@ -11,13 +11,17 @@
 #include "../include/error_handling.h"
 
 void shell(void) {
-	char *res = read_line();
+	char *line = read_line();
+	char **parsed_line = parse_line(line);
 
-	free(res);
+	printf("c_shell: %s command not found\n", parsed_line[0]);
+
+	free(line);
+	free(parsed_line);
 }
 
 char *read_line(void) {
-	ulong buffer_size = SHELL_BUFFER_SIZE;
+	size_t buffer_size = SHELL_BUFFER_SIZE;
 	char *buffer = NULL;
 
 	print_prompt();
@@ -33,6 +37,44 @@ char *read_line(void) {
 	return buffer;
 }
 
+char **parse_line(char *line) {
+	size_t buffer_size = TOKEN_BUFFER_SIZE;
+	u_int8_t position = 0;
+
+	// CLion says it leaking
+	// but Valgrind doesn't ¯\_(ツ)_/¯
+	char **tokens = malloc(sizeof(char *) * buffer_size);
+	char *token = strtok(line, " ");
+
+	if (token == NULL) {
+		EXIT_ON_ERR("Error allocating to tokens");
+	}
+
+	while (token != NULL) {
+		if (token[strlen(token) - 1] == '\n') {
+			token[strlen(token) - 1] = '\0';
+		}
+
+		tokens[position++] = token;
+
+		// probably overkill.
+		if (position >= buffer_size) {
+			buffer_size *= 2;
+			tokens = realloc(tokens, sizeof(char *) * buffer_size);
+			if (tokens == NULL) {
+				EXIT_ON_ERR("Error reallocating to tokens");
+			}
+		}
+
+		// iterate next token
+		token = strtok(NULL, " ");
+	}
+
+	// to be able to iterate this array later on
+	tokens[position] = NULL;
+
+	return tokens;
+}
 
 void print_prompt(void) {
 	Prompt prompt;
